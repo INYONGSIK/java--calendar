@@ -1,9 +1,35 @@
 package calendar;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+
 public class Calendar {
 	private final static int[] MAX_DAYS = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }; // 1~12월 달의 일수
 	private final static int[] LEAP_MAX_DAYS = { 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }; // 윤년
 
+	private static HashMap<Date, String> planMap;
+
+	public Calendar() {
+		planMap = new HashMap<Date, String>();
+	}
+
+	// 일정 등록
+	public static void registerPlan(String strDate, String plan) throws ParseException {
+		Date date = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
+		planMap.put(date, plan);
+	}
+
+	// 일정 검색
+	public String searchPlan(String strDate) throws ParseException {
+		Date date = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
+		String plan = planMap.get(date);
+		return plan;
+
+	}
+
+	// 달의 일수 구하기
 	public static int getMaxDaysOfMonth(int year, int month) {
 		if (isLeapYear(year)) {
 			return LEAP_MAX_DAYS[month];
@@ -30,13 +56,13 @@ public class Calendar {
 			int delta = isLeapYear(i) ? 366 : 365;
 			count += delta;
 		}
-		for (int i = 1; i <month; i++) {
+		for (int i = 1; i < month; i++) {
 			int delta = getMaxDaysOfMonth(year, i);
 			count += delta;
 		}
 		count += day;
 		int weekday = (count + STANDARD_WEEKDAY) % 7;
-		return weekday-1;
+		return weekday - 1;
 	}
 
 	public static void printCalendar(int year, int month) {
